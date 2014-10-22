@@ -25,4 +25,12 @@ public class JWS {
 	public void setPayload(String payload) {
 		this.payload = payload;
 	}
+	
+	public List<JSONSignature> getSignatures(){
+		return signatures;
+	}
+	
+	public String getPayload(){
+		return payload;
+	}
 }

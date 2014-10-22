@@ -23,4 +23,8 @@ public class JSONSignature {
 		this.signature = signature;
 	}
 
+	public String getSignature() {
+		return signature;
+	}
+
 }

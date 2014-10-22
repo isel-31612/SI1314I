@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Signature;
 import java.security.SignatureException;
 import java.security.spec.InvalidKeySpecException;
@@ -15,5 +16,11 @@ public class DigitalSigner {
 		s.initSign(privKey);
 		s.sign(signInput.getBytes(), 0, signInput.length());
 		return new String(s.sign(),"UTF-8");
+	}
+	
+	public static boolean verify(String signature, String algorithm,PublicKey publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException, InvalidKeyException, SignatureException, UnsupportedEncodingException {
+		Signature s =  Signature.getInstance(algorithm);
+		s.initVerify(publicKey);
+		return s.verify(signature.getBytes());
 	}
 }
