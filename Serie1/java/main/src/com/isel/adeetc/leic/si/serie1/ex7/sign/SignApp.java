@@ -1,5 +1,6 @@
 package com.isel.adeetc.leic.si.serie1.ex7.sign;
 
+import java.security.KeyPair;
 import java.security.PrivateKey;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,15 +13,10 @@ public class SignApp {
 	public static void main(String[] args) throws Exception {
 		//Example of JWS Digital Signing. Uses JWS JSON Serialization and JWK
 
-		String message = /*args[0];*/"{\"iss\":\"joe\",\"exp\":1300819380,\"http://example.com/is_root\":true}";
-		String algorithm = /*args[1];*/ "SHA256withRSA";//"RS256";
-		String key = /*args[2];*/ "0vx7agoebGcQSuuPiLJXZptN9nndrQmbXEps2aiAFbWhM78LhWx"+
-				     "4cbbfAAtVT86zwu1RK7aPFFxuhDR1L6tSoc_BJECPebWKRXjBZCiFV4n3oknjhMs"+
-				     "tn64tZ_2W-5JsGY4Hc5n9yBXArwl93lqt7_RN5w6Cf0h4QyQ5v-65YGjQR0_FDW2"+
-				     "QvzqY368QQMicAtaSqzs8KJZgnYb9c7d0zgdAZHzu6qMQvRL5hajrn1n91CbOpbI"+
-				     "SD08qNLyrdkt-bFTWhAI4vMQFh6WeZu0fM4lFd2NcRwr3XPksINHaQ-G_xBniIqb"+
-				     "w0Ls1jF44-csFCur-kEgU8awapJzKnqDKgw";
-		String keyAlgorithm = /*args[3];*/ "RSA";
+		String message = args[0];
+		String algorithm = args[1];
+		String key = args[2];
+		String keyAlgorithm = args[3];
 		
 		JOSE_HeaderS header = new JOSE_HeaderS();
 		header.alg = algorithm;
@@ -33,8 +29,9 @@ public class SignApp {
 		
 		String signInput = protectedHeader + '.' + payload;
 		
-		PrivateKey pKey = Utils.getPrivateKey(key,keyAlgorithm);
-		String signature = DigitalSigner.sign(signInput,algorithm,pKey);
+		KeyPair pKey = Utils.getKeyPair(key,keyAlgorithm);
+		PrivateKey privKey = pKey.getPrivate();
+		String signature = DigitalSigner.sign(signInput,algorithm,privKey);
 		
 		JWS jws = new JWS();
 		
@@ -44,6 +41,8 @@ public class SignApp {
 		ObjectMapper mapper = new ObjectMapper();
 		String jwsSerialized = mapper.writeValueAsString(jws);
 		
+		String publicKey = new String(pKey.getPublic().getEncoded(), "UTF-8");
 		System.out.println(jwsSerialized);
+		System.out.println(publicKey);
 	}
 }
