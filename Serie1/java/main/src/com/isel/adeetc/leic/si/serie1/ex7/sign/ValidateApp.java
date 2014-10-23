@@ -1,8 +1,6 @@
 package com.isel.adeetc.leic.si.serie1.ex7.sign;
 
-import java.security.KeyFactory;
 import java.security.PublicKey;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,15 +14,13 @@ public class ValidateApp {
 	public static void main(String[] args) throws Exception {
 		String jwsSerialized = args[0];
 		String algorithm = args[1];
-		String pKey = args[2];
+		String key = args[2];
 		String keyAlgorithm = args[3];
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JWS jws = mapper.readValue(jwsSerialized, JWS.class);
 		
-		X509EncodedKeySpec pubKeySpec = new X509EncodedKeySpec(pKey.getBytes("UTF-8"));
-		KeyFactory keyFactory = KeyFactory.getInstance(keyAlgorithm);
-		PublicKey publicKey = keyFactory.generatePublic(pubKeySpec);
+		PublicKey publicKey = Utils.getPublicKey(key,keyAlgorithm);
 		
 		List<JSONSignature> list = jws.getSignatures();
 		List<Boolean> verifies = new ArrayList<>(list.size());
